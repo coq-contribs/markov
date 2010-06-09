@@ -57,7 +57,7 @@ Axiom constructive_definite_description:forall(A:Type)(P:A->Prop),
 from Coq.Logic.ChoiceFacts
 ******************************************************************************)
 Lemma chicli_pottier_simpson(P:Prop):P\/~P->{P}+{~P}.
-intros P EM. pose(select:=fun b:bool=>if b then P else ~P). assert{b:bool|
+intros EM. pose(select:=fun b:bool=>if b then P else ~P). assert{b:bool|
 select b}as([|],HP). apply constructive_definite_description. rewrite<-
 unique_existence;split. destruct EM. exists true;trivial. exists false;trivial.
 intros[|][|]H1 H2;simpl in *;reflexivity||contradiction. left;trivial. right;
@@ -80,13 +80,13 @@ Lemma aaron_stump_cse545(Q:nat->Prop):
 (forall n:nat,(forall n':nat,n'<n->Q n')->Q n)->
 forall n:nat,forall n':nat,n'<=n->Q n'.
 (**)
-intros Q sIH n. induction n. intros n' Hn'. apply sIH. intros. elimtype False;
+intros sIH n. induction n. intros n' Hn'. apply sIH. intros. elimtype False;
 intuition. intuition. Qed.
 
 Lemma first_sat(Q:nat->Prop):forall k:nat,Q k
 ->exists m:nat,Q m/\forall n:nat,Q n->m<=n.
 (**)
-intros Q k. apply aaron_stump_cse545 with(Q:=fun z=>Q z->exists m,Q m/\forall n
+intros k. apply aaron_stump_cse545 with(Q:=fun z=>Q z->exists m,Q m/\forall n
 ,Q n->m<=n)(n:=k). 2:auto. intros n H H1. elim(classic(forall i,i<n->~Q i)).
 intro H2. exists n. split. auto. intros j H3. apply NNPP. red;intro H4. apply(
 H2 j). intuition. auto.
@@ -109,7 +109,7 @@ exists g:forall c,C c->nat,
 (forall c c' c'',g c c'=g c c'')
 /\forall c cc c' cc',g c c'=g cc cc'->c=cc.
 (**)
-intros U C H. elim H. intros f H1. assert(H2:forall c,C c->{i|f i=c/\forall j,f
+intros H. elim H. intros f H1. assert(H2:forall c,C c->{i|f i=c/\forall j,f
 j=c->i<=j}). intros c H2. apply constructive_definite_description. elim(H1 c).
 intros k H3. elim(first_sat(fun i=>f i=c)k). intros m H4. exists m. red. split.
 auto. intuition. auto. auto.
@@ -130,7 +130,7 @@ Lemma cntabl_P1(U:Type)(C:Ensemble(Ensemble U))
 (forall c c' c'',g c c'=g c c'')->
 (forall c cc c' cc',g c c'=g cc cc'->c=cc)->cntabl _ C.
 (**)
-intros U C g g' g''. red. elim(classic(Inhabited _ C)). 2:intro H;exists(fun _:
+intros g g' g''. red. elim(classic(Inhabited _ C)). 2:intro H;exists(fun _:
 nat=>Empty_set U);intros;elimtype False;apply H;exists c;auto. intro H. elim H.
 intros d d'. assert(Q:forall i,{c|C c/\(forall z z',g z z'=i->c=z)/\((forall z
 z',g z z'<>i)->c=d)}). intro. elim(chicli_pottier_simpson(exists z,C z/\forall
@@ -358,7 +358,7 @@ Definition simple_P0
 ->simple_2 _ n v w->simple_3 _ n v w->
 forall x:U,{i:nat|i<n/\w i x/\forall i',w i' x->i'=i}.
 (**)
-intros U n v w S0 S1 S2 S3 x. assert(H:exists!i:nat,i<n/\w i x/\forall i',w i'
+intros S0 S1 S2 S3 x. assert(H:exists!i:nat,i<n/\w i x/\forall i',w i'
 x->i'=i). elim(S1 x). intros i H. elim H. intros H1 H2. exists i. split. split.
 auto. split. auto. intros i' H3. apply NNPP. unfold not;intro H4. elim(S0 i i')
 . intro H5. apply(H5 x). intuition. auto. intuition. apply
@@ -636,7 +636,7 @@ Lemma misc_P0
 (U:Type)(f:U->R)(f':forall x:U,(f x>=0)%R)
 :forall a:R,(0<a)%R->forall x:U,((fun y:U=>(f y*a))x>=0)%R.
 (**)
-intros U f f' a a' x. rewrite<-(Rmult_0_l a). apply Rle_ge. apply
+intros a a' x. rewrite<-(Rmult_0_l a). apply Rle_ge. apply
 Rmult_le_compat_r. red. auto. apply Rge_le. auto. Qed.
 
 (******************************************************************************
