@@ -257,11 +257,11 @@ archimed(f x-a)). intros H H1;clear H1. induction(up(f x-a)). simpl in H.
 elimtype False. apply(Rlt_not_ge(f x-a)0). auto. apply(Rplus_ge_reg_l a).
 replace(a+(f x-a))%R with(f x). 2:ring. replace(a+0)%R with a. 2:ring. auto.
 (**)
-exists(nat_of_P p). split. intuition. simpl in H. apply Rge_le. apply Rgt_ge.
+exists(nat_of_P p). split. intuition. unfold IZR in H. rewrite <- INR_IPR in H. apply Rge_le. apply Rgt_ge.
 apply(Rplus_gt_reg_l(-a)%R). replace(-a+(a+INR(nat_of_P p)))%R with (INR(
 nat_of_P p)). 2:ring. replace(-a+f x)%R with(f x-a)%R. 2:ring. auto.
 (**)
-simpl in H. elimtype False. apply(Rlt_not_ge(f x-a)0). apply Rgt_trans with(-
+unfold IZR in H; rewrite <- INR_IPR in H. elimtype False. apply(Rlt_not_ge(f x-a)0). apply Rgt_trans with(-
 INR(nat_of_P p))%R. intuition. auto. apply(Rplus_ge_reg_l a). replace(a+(f x-a)
 )%R with(f x). 2:ring. replace(a+0)%R with a. 2:ring. auto. Qed.
 
@@ -626,7 +626,7 @@ simple_P4 _ A)(simple_P5 _ A)(simple_P6 _ A)(simple_P7 _ A)(simple_P8 _ _ F'
 F'' F''' A A')0)E'))%R with 0%R.
 (**)
 2:apply sym_eq. 2:apply Rmult_eq_0_compat_r. 2:auto. rewrite Rplus_0_l. rewrite
-Rmult_1_l. replace(2*0)%R with 0%R. 2:ring. rewrite Rplus_0_r.
+Rmult_1_l. replace((1+1)*0)%R with 0%R. 2:ring. rewrite Rplus_0_r.
 (**)
 apply(u_cmp U F F' F'' F''' u u''''(Intersection _ A E)A). apply
 Extensionality_Ensembles. split. red. intros x H1. elim H1. auto. intuition.
